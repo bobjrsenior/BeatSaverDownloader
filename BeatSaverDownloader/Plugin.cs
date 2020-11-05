@@ -36,7 +36,11 @@ namespace BeatSaverDownloader
         public void OnApplicationStart()
         {
             certificateCallback = System.Net.ServicePointManager.ServerCertificateValidationCallback;
-            System.Net.ServicePointManager.ServerCertificateValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = (message, cert, chain, sslPolicyErrors) => {
+                if (System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors == sslPolicyErrors)
+                    return true;
+                return false;                
+            };
 
             string steamDllPath = Path.Combine(IPA.Utilities.UnityGame.InstallPath, "Beat Saber_Data", "Plugins", "steam_api64.dll");
             bool hasSteamDll = File.Exists(steamDllPath);
