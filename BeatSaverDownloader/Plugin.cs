@@ -20,6 +20,7 @@ namespace BeatSaverDownloader
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static BeatSaverSharp.BeatSaver BeatSaver;
+        public static System.Net.Security.RemoteCertificateValidationCallback certificateCallback;
         [Init]
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {
@@ -29,10 +30,14 @@ namespace BeatSaverDownloader
         public void OnApplicationQuit()
         {
             PluginConfig.SaveConfig();
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = certificateCallback;
         }
         [OnStart]
         public void OnApplicationStart()
         {
+            certificateCallback = System.Net.ServicePointManager.ServerCertificateValidationCallback;
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
             string steamDllPath = Path.Combine(IPA.Utilities.UnityGame.InstallPath, "Beat Saber_Data", "Plugins", "steam_api64.dll");
             bool hasSteamDll = File.Exists(steamDllPath);
             string platform = hasSteamDll ? "steam" : "oculus";
