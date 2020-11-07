@@ -37,7 +37,8 @@ namespace BeatSaverDownloader
         {
             certificateCallback = System.Net.ServicePointManager.ServerCertificateValidationCallback;
             System.Net.ServicePointManager.ServerCertificateValidationCallback = (message, cert, chain, sslPolicyErrors) => {
-                if (System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors == sslPolicyErrors)
+                if (System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors == sslPolicyErrors ||
+                    System.Net.Security.SslPolicyErrors.None == sslPolicyErrors)
                     return true;
                 return false;                
             };
